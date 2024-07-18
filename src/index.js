@@ -2,9 +2,11 @@ const express = require('express');
 
 const app = express();
 
+app.use(express.json())
+
 const PORT = process.env.PORT || 3000;
 
-const mockUsers = [
+let mockUsers = [
     {id:1,username:"yuran",displayname:"Yuran"},
     {id:2,username:"Oscar",displayname:"Oscar"},
     {id:3,username:"Nhassengo",displayname:"Nhassengo"},
@@ -30,6 +32,14 @@ app.get('/api/users',(req,res) =>{
     return res.send(mockUsers);
     
 });
+
+app.post('/api/users',(req,res)=>{
+    console.log(req.body);
+    const {body} = req;
+    const newUser = {id:mockUsers[mockUsers.length-1].id+1,...body};
+    mockUsers = [...mockUsers,newUser];
+    return res.send(200);
+})
 
 app.get('/api/users/:id', (req,res) =>{
     console.log(req.params);
