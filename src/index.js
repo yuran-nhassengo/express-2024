@@ -7,8 +7,11 @@ const PORT = process.env.PORT || 3000;
 const mockUsers = [
     {id:1,username:"yuran",displayname:"Yuran"},
     {id:2,username:"Oscar",displayname:"Oscar"},
-    {id:3,username:"Nhassengo",displayname:"Nhassengo"}
-
+    {id:3,username:"Nhassengo",displayname:"Nhassengo"},
+    {id:4,username:"Adam",displayname:"Adam"},
+    {id:5,username:"Pander",displayname:"Pander"},
+    {id:6,username:"Wil",displayname:"Wil"},
+    {id:7,username:"John",displayname:"John"},
 ];
 
 app.get("/", (req,res) =>{
@@ -16,7 +19,16 @@ app.get("/", (req,res) =>{
 });
 
 app.get('/api/users',(req,res) =>{
-    res.send(mockUsers);
+    console.log(req.query);
+    const {query:{filter,value}} = req;
+
+
+    if(filter && value) return res.send(
+        mockUsers.filter((user) => user[filter].includes(value))
+    );
+
+    return res.send(mockUsers);
+    
 });
 
 app.get('/api/users/:id', (req,res) =>{
@@ -27,7 +39,7 @@ app.get('/api/users/:id', (req,res) =>{
     const findUser = mockUsers.find((user) => user.id === parseId);
     if(!findUser) return res.sendStatus(404);
     return res.send(findUser);
-})
+});
 
 app.get('/api/product', (req,res) =>{
     res.send([
