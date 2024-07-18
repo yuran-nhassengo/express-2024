@@ -14,8 +14,14 @@ app.get('/api/users',(req,res) =>{
         {id:2,username:"Oscar",displayname:"Oscar"},
         {id:3,username:"Nhassengo",displayname:"Nhassengo"}
 
-    ])
-})
+    ]);
+});
+
+app.get('/api/product', (req,res) =>{
+    res.send([
+        {id:123,name:'chicken breast',price:12.9}
+    ]);
+});
 
 app.listen(PORT,() =>{
     console.log(`Running on Port ${PORT}`)
