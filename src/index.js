@@ -38,7 +38,7 @@ app.post('/api/users',(req,res)=>{
     const {body} = req;
     const newUser = {id:mockUsers[mockUsers.length-1].id+1,...body};
     mockUsers = [...mockUsers,newUser];
-    return res.send(200);
+    return res.status(201).send(newUser);
 })
 
 app.get('/api/users/:id', (req,res) =>{
