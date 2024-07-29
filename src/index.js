@@ -4,6 +4,13 @@ const app = express();
 
 app.use(express.json())
 
+const loggingMiddleware = (req,res,next) =>{
+    console.log(`${req.method} - ${req.url}`);
+    next();
+};
+
+
+
 const PORT = process.env.PORT || 3000;
 
 let mockUsers = [
@@ -16,7 +23,7 @@ let mockUsers = [
     {id:7,username:"John",displayname:"John"},
 ];
 
-app.get("/", (req,res) =>{
+app.get("/", loggingMiddleware,(req,res) =>{
     res.status(201).send({msg:"Hello"});
 });
 
