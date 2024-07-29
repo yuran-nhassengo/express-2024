@@ -9,7 +9,20 @@ const loggingMiddleware = (req,res,next) =>{
     next();
 };
 
+const resolveUserIndexById = (req,res,next) =>{
 
+    const {params:{id}} = req;
+    const parsedId = parseInt(id);
+    if(isNaN(parsedId)) return res.sendStatus(400);
+
+    const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
+
+    if(findUserIndex === -1) return res.sendStatus(404);
+
+    req.findUserIndex = findUserIndex;
+    next();
+
+}
 
 const PORT = process.env.PORT || 3000;
 
@@ -64,50 +77,25 @@ app.get('/api/product', (req,res) =>{
     ]);
 });
 
-app.put('/api/users/:id',(req,res) =>{
-    const {body,params:{id}} = req;
-    const parsedId = parseInt(id);
-    if(isNaN(parsedId)) return res.sendStatus(400);
-
-    const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
-
-    if(findUserIndex === -1) return res.sendStatus(404);
-
-    mockUsers[findUserIndex] = {id:parsedId,...body};
+app.put('/api/users/:id',resolveUserIndexById,(req,res) =>{
+    const {body, findUserIndex} = req;
+    mockUsers[findUserIndex] = {id: mockUsers[findUserIndex].id,...body};
     return res.sendStatus(200);
 });
 
-app.patch('/api/users/:id',(req,res) =>{
+app.patch('/api/users/:id',resolveUserIndexById,(req,res) =>{
     const {
-        body,
-        params:{id},
-    } = req;
-
-    const parsedId = parseInt(id);
-
-    if(isNaN(parsedId)) return res.sendStatus(400);
-    const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
-
-    if(findUserIndex === -1) return res.sendStatus(404);
+        body,findUserIndex} = req;
 
     mockUsers[findUserIndex] ={...mockUsers[findUserIndex],...body};
     return res.sendStatus(200);
 
 });
 
-app.delete('/api/users/:id',(req,res) =>{
-    const {params:{id}} =req;
+app.delete('/api/users/:id',resolveUserIndexById,(req,res) =>{
+    const {findUserIndex} =req;
 
-    const parsedId = parseInt(id);
-
-    if(isNaN(parsedId)) return res.sendStatus(400);
-
-    const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
-
-    if(findUserIndex === -1) return res.sendStatus(404);
-
-
-    mockUsers.splice(parsedId,1);
+    mockUsers.splice(findUserIndex,1);
 
     return res.sendStatus(200);
 })
